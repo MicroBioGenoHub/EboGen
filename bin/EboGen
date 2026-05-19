@@ -22,7 +22,7 @@ version="1.0"
 usage() {
     echo -e ${Cyan}
     cat <<EOF
-This is VaricellaGen $version
+This is EboGen $version
 Developed and maintained by Stephen Kanyerezi, Ivan Sserwadda & Gerald Mboowa
 
 Synopsis:
@@ -57,7 +57,7 @@ Other options:
 
 	--cores			Number of cpus to use. Default=16
                      
-For further explanation please visit: https://github.com/MicroBioGenoHub/VaricellaGen
+For further explanation please visit: https://github.com/MicroBioGenoHub/EboGen
 EOF
 #    echo -e ${Off}
 }
@@ -174,7 +174,7 @@ run_alignment_p() {
 	output="$output_dir/results/alignment"
 	mkdir -p $output
 	id=$(echo $forward_read | awk -F"/" '{print $NF}' | cut -f1 -d"_")
-	bwa mem -t $cores ${HOME}/VaricellaGen/references/zoster.fasta $output_dir/results/qc/trimmed_fastqs/$R1 $output_dir/results/qc/trimmed_fastqs/$R2 | \
+	bwa mem -t $cores ${HOME}/EboGen/references/bdbv.fasta $output_dir/results/qc/trimmed_fastqs/$R1 $output_dir/results/qc/trimmed_fastqs/$R2 | \
 	samtools sort -o $output_dir/results/alignment/${id}.zoster.sorted.bam
 	samtools view -F4 $output_dir/results/alignment/${id}.zoster.sorted.bam -o $output_dir/results/alignment/${id}.zoster.sorted.mapped.bam
         samtools sort -o $output_dir/results/alignment/${id}.zoster.sorted.mapped.sorted.bam $output_dir/results/alignment/${id}.zoster.sorted.mapped.bam
@@ -191,21 +191,21 @@ run_var_p() {
 	output="$output_dir/results/variants"
 	mkdir -p $output
 	input="$output_dir/results/alignment/${id}.zoster.sorted.mapped.sorted.bam"
-	freebayes -p 1 -f ${HOME}/VaricellaGen/references/zoster.fasta -F 0.2 -C 1 --pooled-continuous --min-coverage 10 --gvcf --gvcf-dont-use-chunk true $input > $output/${id}_zoster.gvcf
+	freebayes -p 1 -f ${HOME}/EboGen/references/zoster.fasta -F 0.2 -C 1 --pooled-continuous --min-coverage 10 --gvcf --gvcf-dont-use-chunk true $input > $output/${id}_zoster.gvcf
 	vt decompose_blocksub $output/${id}_zoster.gvcf -o $output/${id}_zoster_decompose.vcf
 #	conda activate pysam
 	process_gvcf.py -d 10 -l 0.25 -u 0.75 -m $output/${id}_zoster.mask.txt -v $output/${id}_zoster.variants.vcf -c $output/${id}_zoster.consensus.vcf $output/${id}_zoster.gvcf	
 #	conda activate sarscov
-	bcftools norm  -D -d all -f ${HOME}/VaricellaGen/references/zoster.fasta $output/${id}_zoster.variants.vcf > $output/${id}_zoster.variants.norm.vcf
-	bcftools norm  -D -d all -f ${HOME}/VaricellaGen/references/zoster.fasta $output/${id}_zoster.consensus.vcf > $output/${id}_zoster.consensus.norm.vcf
+	bcftools norm  -D -d all -f ${HOME}/EboGen/references/zoster.fasta $output/${id}_zoster.variants.vcf > $output/${id}_zoster.variants.norm.vcf
+	bcftools norm  -D -d all -f ${HOME}/EboGen/references/zoster.fasta $output/${id}_zoster.consensus.vcf > $output/${id}_zoster.consensus.norm.vcf
 	cat $output/${id}_zoster.consensus.norm.vcf | awk -v vartag=ConsensusTag=ambiguous '$0 ~ /^#/ || $0 ~ vartag' > $output/${id}_zoster.ambiguous.norm.vcf
 	bgzip -f $output/${id}_zoster.ambiguous.norm.vcf
 	tabix -f -p vcf $output/${id}_zoster.ambiguous.norm.vcf.gz
 	cat $output/${id}_zoster.consensus.norm.vcf | awk -v vartag=ConsensusTag=fixed '$0 ~ /^#/ || $0 ~ vartag' > $output/${id}_zoster.fixed.norm.vcf
 	bgzip -f $output/${id}_zoster.fixed.norm.vcf
 	tabix -f -p vcf $output/${id}_zoster.fixed.norm.vcf.gz
-	bcftools consensus -f ${HOME}/VaricellaGen/references/zoster.fasta -s - -I $output/${id}_zoster.ambiguous.norm.vcf.gz > $output/${id}_zoster.ambiguous.fa
-	CTG_NAME=$(head -n1 ${HOME}/VaricellaGen/references/zoster.fasta | sed 's/>//')
+	bcftools consensus -f ${HOME}/EboGen/references/zoster.fasta -s - -I $output/${id}_zoster.ambiguous.norm.vcf.gz > $output/${id}_zoster.ambiguous.fa
+	CTG_NAME=$(head -n1 ${HOME}/EboGen/references/zoster.fasta | sed 's/>//')
 	bcftools consensus -f $output/${id}_zoster.ambiguous.fa -s - -m $output/${id}_zoster.mask.txt $output/${id}_zoster.fixed.norm.vcf.gz | sed "s/$CTG_NAME/$id/" > $output/${id}_zoster.consensus.fa
 	mkdir -p $output_dir/results/consensus
 	mv $output/*consensus*fa $output_dir/results/consensus
@@ -221,7 +221,7 @@ run_var_p() {
 	#merge the produced consensus to the background dataset if your genome coverage is 70% and above
 	if (( $(echo "$nucper > 70") ))
 	then
-		cat $output_dir/results/consensus/*fa ${HOME}/VaricellaGen/background_dataset/bg.fasta > $output_dir/results/phylogeny/msa/${id}_multifasta.fa
+		cat $output_dir/results/consensus/*fa ${HOME}/EboGen/background_dataset/bg.fasta > $output_dir/results/phylogeny/msa/${id}_multifasta.fa
 		mafft --thread $cores $output_dir/results/phylogeny/msa/${id}_multifasta.fa > $output_dir/results/phylogeny/msa/${id}_multifasta.aln.fa
 		iqtree2 -s $output_dir/results/phylogeny/msa/${id}_multifasta.fa -T $cores -m TEST -czb -B 1000 -o $background --quiet
 		mv $output_dir/results/phylogeny/msa/* $output_dir/results/phylogeny/tree/
@@ -242,7 +242,7 @@ run_typing_p() {
 	id=$(echo $forward_read | awk -F"/" '{print $NF}' | cut -f1 -d"_")
 	output="$output_dir/results/clade"
 	mkdir -p $output
-	clade=$(head -n1 ${HOME}/VaricellaGen/databases/new_scheme.txt | cut -d',' -f2- | sed 's/,/\n/g' | grep -wf - $output_dir/results/variants/${id}_zoster_decompose.vcf  | cut -f2,4,5  | sed 's/<\*>/ref/' | awk '{print $2$1$3}' | sed -z 's/\n/,/g; s/,$/\n/' | grep -f - ${HOME}/VaricellaGen/databases/new_scheme.txt | cut -f1 -d"," | sed 's/.*/Clade &/')
+	clade=$(head -n1 ${HOME}/EboGen/databases/new_scheme.txt | cut -d',' -f2- | sed 's/,/\n/g' | grep -wf - $output_dir/results/variants/${id}_zoster_decompose.vcf  | cut -f2,4,5  | sed 's/<\*>/ref/' | awk '{print $2$1$3}' | sed -z 's/\n/,/g; s/,$/\n/' | grep -f - ${HOME}/EboGen/databases/new_scheme.txt | cut -f1 -d"," | sed 's/.*/Clade &/')
 	echo "id,clade" > $output/clade.csv
 	echo "$id,$clade" >> $output/clade.csv
 }
@@ -257,7 +257,7 @@ run_tree_p() {
 	output="$output_dir/results/phylogeny"
 	mkdir -p "$output_dir/results/phylogeny/msa"
 	mkdir -p "$output_dir/results/phylogeny/tree"
-	cat $input ${HOME}/VaricellaGen/background_dataset/bg.fasta > $output_dir/results/phylogeny/msa/$id.fa
+	cat $input ${HOME}/EboGen/background_dataset/bg.fasta > $output_dir/results/phylogeny/msa/$id.fa
 	mafft --thread $cores $output_dir/results/phylogeny/msa/$id.fa > $output/msa/${id}.aln.fa
 	iqtree2 -s $output/msa/${id}.aln.fa -T $cores -m TEST -czb -B 1000 -o $background --quiet
 #	iqtree2 -s $output/msa/${id}.aln.fa -T $cores -m TEST --quiet
@@ -273,7 +273,7 @@ run_tree_p() {
 
 if [ "$typing" = true ]
 then
-	conda activate VaricellaGen
+	conda activate EboGen
 	exist_p
 	run_fastqc_p	
 	run_alignment_p
@@ -281,13 +281,13 @@ then
 	run_typing_p
 elif [ "$varcall" = true ]
 then
-	conda activate VaricellaGen
+	conda activate EboGen
 	exist_p
 	run_fastqc_p
 	run_alignment_p
 	run_var_p
 elif [ "$phylogeny" = true ]
 then
-	conda activate VaricellaGen
+	conda activate EboGen
 	run_tree_p
 fi
