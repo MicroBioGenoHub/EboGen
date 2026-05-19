@@ -23,15 +23,15 @@ usage() {
     echo -e ${Cyan}
     cat <<EOF
 This is VaricellaGen $version
-Developed and maintained by Stephen Kanyerezi, Ivan Sserwadda, Jupiter Marina Kabahita, & Gerald Mboowa
+Developed and maintained by Stephen Kanyerezi, Ivan Sserwadda & Gerald Mboowa
 
 Synopsis:
-	VaricellaGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Varicella-zoster virus (VZV). It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow.
+	EboGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Ebola Virus Disease. It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow.
 
 Usage: 
-	Given paired reads, to run perform variant calling, clade typing and consensus genome generation; VaricellaGen [options] -f <path of forward read> -r <path of reverse read> -o <output directory to be created> --typing true
-	Given paired reads, to perform variant calling and generate a consensus genome without clade typing; VaricellaGen [options] -f <path of forward read> -r <path of reverse read> -o <output directory to be created> --varcall true
-	Given a multifasta file, to perform phylogeny; VaricellaGen [options] --consensus <path of multifasta file> --phylogeny true -o <output directory to be created> 
+	Given paired reads, to run perform variant calling, clade typing and consensus genome generation; EboGen [options] -R1 <path of forward read> -R2 <path of reverse read> -o <output directory to be created> --typing true
+	Given paired reads, to perform variant calling and generate a consensus genome without clade typing; EboGen [options] -R1 <path of forward read> -R2 <path of reverse read> -o <output directory to be created> --varcall true
+	Given a multifasta file, to perform phylogeny; EboGen [options] --multifasta <path of multifasta file> --phylogeny true -o <output directory to be created> 
 
 General:
 	-h/--help       Show this help menu
@@ -39,11 +39,11 @@ General:
 	-x/--citation   Show citation and exit
 
 Mandatory options for paired reads:
-	-f/--forward-read	Path of the forward reads [either .fastq or .fastq.gz]
+	-R1/--forward-read	Path of the forward reads [either .fastq or .fastq.gz]
 
-	-r/--reverse-read	Path of the reverse reads [either .fastq or .fastq.gz]
+	-R2/--reverse-read	Path of the reverse reads [either .fastq or .fastq.gz]
 
-	--consensus		Path of mulitfasta file. Applicable if you want to perform phylogenetics
+	--multifasta		Path of mulitfasta file. Applicable if you want to perform phylogenetics
 
 	-o/--output-dir	        Directory to be created for results
 
@@ -156,7 +156,6 @@ exist_p() {
 # Function to perform quality assessment on paired-end files
 run_fastqc_p() {
 	# Output directory for FastQC results
-#	conda activate sarscov
     	output="$output_dir/results/qc"
 	mkdir -p $output/trimmed_fastqs
 	fastqc $forward_read $reverse_read -o $output/
