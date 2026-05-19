@@ -111,12 +111,12 @@ do
         		exit 1
         		;;
     		-v|--version)
-        		echo "This is VaricellaGen version $version"
+        		echo "This is EboGen version $version"
         		exit 1
         		;;
     		-x|--citation)
-        		echo -e "\nIf using VaricellaGen, please cite:"
-			echo -e "VaricellaGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Varicella-zoster virus (VZV). It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow."
+        		echo -e "\nIf using EboGen, please cite:"
+			echo -e "EboGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Ebola Virus. It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow."
         		exit 1
         		;;
                 *)
