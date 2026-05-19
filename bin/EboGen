@@ -238,14 +238,14 @@ run_var_p() {
 #run_var_p
 
 # Function to perform clade typing
-run_typing_p() {
-	id=$(echo $forward_read | awk -F"/" '{print $NF}' | cut -f1 -d"_")
-	output="$output_dir/results/clade"
-	mkdir -p $output
-	clade=$(head -n1 ${HOME}/EboGen/databases/new_scheme.txt | cut -d',' -f2- | sed 's/,/\n/g' | grep -wf - $output_dir/results/variants/${id}_bdbv_decompose.vcf  | cut -f2,4,5  | sed 's/<\*>/ref/' | awk '{print $2$1$3}' | sed -z 's/\n/,/g; s/,$/\n/' | grep -f - ${HOME}/EboGen/databases/new_scheme.txt | cut -f1 -d"," | sed 's/.*/Clade &/')
-	echo "id,clade" > $output/clade.csv
-	echo "$id,$clade" >> $output/clade.csv
-}
+#run_typing_p() {
+#	id=$(echo $forward_read | awk -F"/" '{print $NF}' | cut -f1 -d"_")
+#	output="$output_dir/results/clade"
+#	mkdir -p $output
+#	clade=$(head -n1 ${HOME}/EboGen/databases/new_scheme.txt | cut -d',' -f2- | sed 's/,/\n/g' | grep -wf - $output_dir/results/variants/${id}_bdbv_decompose.vcf  | cut -f2,4,5  | sed 's/<\*>/ref/' | awk '{print $2$1$3}' | sed -z 's/\n/,/g; s/,$/\n/' | grep -f - ${HOME}/EboGen/databases/new_scheme.txt | cut -f1 -d"," | sed 's/.*/Clade &/')
+#	echo "id,clade" > $output/clade.csv
+#	echo "$id,$clade" >> $output/clade.csv
+#}
 
 
 #run_typing_p
