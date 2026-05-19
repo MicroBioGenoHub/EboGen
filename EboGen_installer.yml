@@ -1,4 +1,4 @@
-name: VaricellaGen
+name: EboGen
 channels:
   - conda-forge
   - bioconda
