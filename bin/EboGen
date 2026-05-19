@@ -278,7 +278,7 @@ then
 	run_fastqc_p	
 	run_alignment_p
 	run_var_p
-	run_typing_p
+	#run_typing_p
 elif [ "$varcall" = true ]
 then
 	conda activate EboGen
