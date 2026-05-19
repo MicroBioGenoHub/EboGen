@@ -1,18 +1,17 @@
-## 🎬 VaricellaGen
-A comprehensive pipeline for the genomic analysis of Varicella-zoster virus (VZV), the causative agent of chickenpox.
+## 🎬 EboGen
+A comprehensive pipeline for the genomic analysis of Ebola virus, the causative agent of Ebola virus disease
 
 ## 🏆 About
-VaricellaGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Varicella-zoster virus (VZV). It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow.
+EboGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Ebola Virus. It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow.
 
-![workflow](VaricellaGen.png)
+![workflow](EBoGen.png)
 
 ## 🏷️ Key Features:
 
 1. Quality Control: Automatically cleans and filters raw sequencing reads to ensure data accuracy.
 2. Variant Calling: Accurately identifies SNPs and indels using GATK, providing enhanced genomic insights.
 3. Consensus Genome Generation: Produces high-quality, reference-based genome assemblies for downstream analysis.
-4. Clade Typing: Rapidly classifies VZV isolates into established clades.
-5. Phylogenetic Analysis: Generates robust phylogenetic trees using maximum likelihood and neighbor-joining methods.
+4. Phylogenetic Analysis: Generates robust phylogenetic trees using maximum likelihood and neighbor-joining methods.
 
 ## ⚙️  Installation
 
@@ -22,28 +21,27 @@ Clone the software from the offical repository using:
 
 `conda activate base`
 
-`cd && git clone https://github.com/MicroBioGenoHub/VaricellaGen.git`
+`cd && git clone https://github.com/MicroBioGenoHub/EboGen.git`
 
-`cd VaricellaGen`
+`cd EboGen`
 
-`conda env create -n VaricellaGen --file VarGen_installer.yml`
+`conda env create -n EboGen --file EboGen_installer.yml`
 
 `bash setup.sh`
 
-Run the program to make sure you have access to all the plug-ins using the command `VaricellaGen -h` to view output below:
+Run the program to make sure you have access to all the plug-ins using the command `EboGen -h` to view output below:
 
 ```bash
 
-This is VaricellaGen $version
-Developed and maintained by Stephen Kanyerezi, Ivan Sserwadda, Jupiter Marina Kabahita, & Gerald Mboowa
+This is EboGen $version
+Developed and maintained by Stephen Kanyerezi, Ivan Sserwadda, & Gerald Mboowa
 
 Synopsis:
-        VaricellaGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Varicella-zoster virus (VZV). It integrates quality control, variant calling, consensus genome generation, clade typing, and phylogenetic analysis into a streamlined workflow.
+        EboGen is a modular and automated pipeline designed to simplify and standardize the genomic analysis of Ebola Virus. It integrates quality control, variant calling, consensus genome generation, and phylogenetic analysis into a streamlined workflow.
 
 Usage: 
-        Given paired reads, to run perform variant calling, clade typing and consensus genome generation; VaricellaGen [options] -f <path of forward read> -r <path of reverse read> -o <output directory to be created> --typing true
-        Given paired reads, to perform variant calling and generate a consensus genome without clade typing; VaricellaGen [options] -f <path of forward read> -r <path of reverse read> -o <output directory to be created> --varcall true
-        Given a multifasta file, to perform phylogeny; VaricellaGen [options] --consensus <path of multifasta file> --phylogeny true -o <output directory to be created> 
+        Given paired reads, to perform variant calling and generate a consensus genome; EboGen [options] -R1 <path of forward read> -R2 <path of reverse read> -o <output directory to be created> --varcall true
+        Given a multifasta file, to perform phylogeny; EboGen [options] --multifasta <path of multifasta file> --phylogeny true -o <output directory to be created> 
 
 General:
         -h/--help       Show this help menu
@@ -51,15 +49,14 @@ General:
         -x/--citation   Show citation and exit
 
 Mandatory options for paired reads:
-        -f/--forward-read       Path of the forward reads [either .fastq or .fastq.gz]
+        -R1/--forward-read       Path of the forward reads [either .fastq or .fastq.gz]
 
-        -r/--reverse-read       Path of the reverse reads [either .fastq or .fastq.gz]
+        -R2/--reverse-read       Path of the reverse reads [either .fastq or .fastq.gz]
 
-        --consensus             Path of mulitfasta file. Applicable if you want to perform phylogenetics
+        --multifasta             Path of mulitfasta file. Applicable if you want to perform phylogenetics
 
         -o/--output-dir         Directory to be created for results
 
-        --typing                 [true or false (default)] Run the pipeline to generate variants, clade typing, and consensus genome.
 
         --varcall               [true or false (default)] Genrate variants and consensus genome only.
 
@@ -75,22 +72,16 @@ For further explanation please visit: https://github.com/MicroBioGenoHub/Varicel
 
 ## How ro Run
 
-If you want to perform variant calling, consensus genome generation, and clade typing, run the command below
-
-```
-VaricellaGen -o <output_dir> -f <forward read path> -r <reverse read path> --typing true
-```
-
 If you want to perform variant calling and consensus genome generation only, run the command below
 
 ```
-VaricellaGen -o <output_dir> -f <forward read path> -r <reverse read path> --varcall true
+EboGen -o <output_dir> -R1 <forward read path> -R2 <reverse read path> --varcall true
 ```
 
 If you have a multi fasta file and you want to perform phylogenetics, run the command below
 
 ```
-VaricellaGen -o <output_dir> --consensus <path to multi fasta file> --phylogeny true
+EboGen -o <output_dir> --multifasta <path to multi fasta file> --phylogeny true
 ```
 
 ## Output Files
@@ -102,7 +93,6 @@ Here we describe the output files generated from the analysis pipeline. The outp
 | Directory      | File(s)               | Description |
 |--------------|----------------------|-------------|
 | **alignment/**  | BAM File | Contains the aligned sequencing reads, used for downstream variant calling and consensus genome generation. |
-| **clade/**  | clade.csv | CSV file with a header row, followed by sequence IDs and their corresponding clades, used for phylogenetic classification. |
 | **consensus/**  | Consensus FASTA File | Contains the final consensus genome sequence. |
 |              | Metrics File | Reports genome coverage and N-content statistics. |
 | **qc/**  | HTML Files | Contain quality control (QC) reports. |
