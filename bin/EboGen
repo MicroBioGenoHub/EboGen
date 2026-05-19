@@ -212,8 +212,8 @@ run_var_p() {
 	#calculate genome coverage and n content
 	ncnt=$(grep -v ">" $output_dir/results/consensus/*fa | grep -o N | wc -l)
 	nuccnt=$(grep -v ">" $output_dir/results/consensus/*fa | grep -o [AGTC] | wc -l)
-	nper=$(echo "scale = 2; $ncnt*100 / 124884" | bc -l)
-	nucper=$(echo "scale = 2; $nuccnt*100 / 124884" | bc -l)
+	nper=$(echo "scale = 2; $ncnt*100 / 18940" | bc -l)
+	nucper=$(echo "scale = 2; $nuccnt*100 / 18940" | bc -l)
 	echo "id,genome coverage,N content" > $output_dir/results/consensus/metrics.csv
 	echo "$id,$nucper,$nper" >> $output_dir/results/consensus/metrics.csv
 	mkdir -p $output_dir/results/phylogeny/msa
